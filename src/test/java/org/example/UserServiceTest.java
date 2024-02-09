@@ -19,6 +19,7 @@ class UserServiceTest {
 
     private UserService userService;
     private UserRepository userRepository;
+    private AddressRepository addressRepository;
 
     private final PrintStream originalOut = System.out;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -29,7 +30,7 @@ class UserServiceTest {
         userRepository = mock(UserRepository.class);
         System.setOut(new PrintStream(outContent));
 
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, addressRepository);
     }
 
     @AfterEach
@@ -75,8 +76,8 @@ class UserServiceTest {
 
         // then
         String consoleOutput = outContent.toString();
-        String expectedString = "User{id=null, firstName='User', lastName='Name', email='test@test.com', age=12, gender='m', createdAt=1970-01-01 05:59:00.0}\r\n" +
-                "User{id=null, firstName='User 2', lastName='Name 2', email='test2@test.com', age=21, gender='f', createdAt=1990-04-05 20:59:00.0}";
+        String expectedString = "User{id=null, firstName='User', lastName='Name', email='test@test.com', age=12, gender='m', createdAt=1970-01-01 05:59:00.0, addresses=[]}\r\n" +
+                "User{id=null, firstName='User 2', lastName='Name 2', email='test2@test.com', age=21, gender='f', createdAt=1990-04-05 20:59:00.0, addresses=[]}";
         assertEquals(expectedString, consoleOutput.trim());
 
         verify(userRepository, times(1)).getAllUsers();

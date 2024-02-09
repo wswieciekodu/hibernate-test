@@ -3,7 +3,9 @@ package org.example.model;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -11,15 +13,15 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "FIRST_NAME")
     private String firstName;
-    @Column(name = "LAST_NAME")
     private String lastName;
     private String email;
     private Integer age;
     private String gender;
-    @Column(name = "CREATED_AT")
     private Timestamp createdAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Address> addresses = new HashSet<>();
 
     public User() {
     }
@@ -89,6 +91,14 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public Set<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Set<Address> addresses) {
+        this.addresses = addresses;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -127,6 +137,7 @@ public class User {
                 ", age=" + age +
                 ", gender='" + gender + '\'' +
                 ", createdAt=" + createdAt +
+                ", addresses=" + addresses +
                 '}';
     }
 }

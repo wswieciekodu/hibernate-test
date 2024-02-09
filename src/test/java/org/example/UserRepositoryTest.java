@@ -107,13 +107,33 @@ class UserRepositoryTest {
     }
 
     @Test
-    void shouldDeleteAllUsersFromDbByExecutingQuery() {
+    void shouldDeleteAllUsersFromDbByGetAllUsersAndRemoveOneByOne() {
         // given
+        User user1 = new User(
+                "User",
+                "Name",
+                "test@test.com",
+                12,
+                "m",
+                Timestamp.valueOf(LocalDateTime.of(1970, Month.JANUARY, 01, 5, 59)));
+
+        User user2 = new User(
+                "User 2",
+                "Name 2",
+                "test2@test.com",
+                21,
+                "f",
+                Timestamp.valueOf(LocalDateTime.of(1990, Month.APRIL, 05, 20, 59)));
+
+        List<User> users = List.of(user1, user2);
         when(entityManager.getTransaction()).thenReturn(entityTransaction);
-        when(entityManager.createQuery("DELETE FROM User")).thenReturn(query);
+        when(entityManager.createQuery("FROM User", User.class)).thenReturn(query);
+        when(query.getResultList()).thenReturn(users);
+
         // when
         userRepository.deleteAllUsers();
         // then
-        verify(query, times(1)).executeUpdate();
+        verify(entityManager, times(1)).createQuery("FROM User", User.class);
+        verify(entityManager, times(2)).remove(any(User.class));
     }
 }

@@ -36,6 +36,7 @@ public class UserService {
         address.setStreet(street);
         address.setNumber(number);
         address.setCity(city);
+        address.setUser(user);
 
         user.getAddresses().add(address);
 
